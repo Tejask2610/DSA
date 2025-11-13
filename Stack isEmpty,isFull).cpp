@@ -1,60 +1,133 @@
 #include <iostream>
-#include <string>
+#include <stdlib.h>
 using namespace std;
 
-struct Student {
-    int roll;
-    string name;
-    float sgpa;
+struct Node {
+    int data;
+    struct Node* next;
 };
 
-// Function to create database of 10 students
-void createDatabase(Student s[], int n) {
-    cout << "\nEnter details of " << n << " students:\n";
-    for (int i = 0; i < n; i++) {
-        cout << "\nStudent " << i + 1 << ":\n";
-        cout << "Roll No: ";
-        cin >> s[i].roll;
-        cout << "Name: ";
-        cin >> s[i].name;
-        cout << "SGPA: ";
-        cin >> s[i].sgpa;
+struct Node* top = NULL;
+
+// Function to check if stack is empty
+int isEmpty() {
+    return (top == NULL);
+}
+
+// Function to check if stack is full
+int isFull() {
+    struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
+    if (temp == NULL)
+        return 1;  // Memory not available → Stack Full
+    else {
+        free(temp);
+        return 0;
+    }
+}
+
+// Push function
+void push(int val) {
+    if (isFull()) {
+        cout << "\nStack Overflow (No memory available)\n";
+        return;
+    }
+    struct Node* new_node = (struct Node*)malloc(sizeof(struct Node));
+    new_node->data = val;
+    new_node->next = top;
+    top = new_node;
+}
+
+// Pop function
+void pop() {
+    if (isEmpty()) {
+        cout << "\nStack Underflow\n";
+    } else {
+        cout << "\nThe popped element is: " << top->data << endl;
+        top = top->next;
+    }
+}
+
+// Peek function
+void peek() {
+    if (isEmpty()) {
+        cout << "\nStack is empty\n";
+    } else {
+        cout << "\nTop element is: " << top->data << endl;
     }
 }
 
 // Display function
-void display(Student s[], int n) {
-    cout << "\nRoll No\tName\tSGPA\n";
-    for (int i = 0; i < n; i++) {
-        cout << s[i].roll << "\t" << s[i].name << "\t" << s[i].sgpa << endl;
-    }
-}
-
-// Selection Sort by Name (Ascending)
-void selectionSort(Student s[], int n) {
-    for (int i = 0; i < n - 1; i++) {
-        int minIndex = i;
-        for (int j = i + 1; j < n; j++) {
-            if (s[j].name < s[minIndex].name)
-                minIndex = j;
+void display() {
+    struct Node* ptr;
+    if (isEmpty()) {
+        cout << "\nStack is empty\n";
+    } else {
+        ptr = top;
+        cout << "\nStack elements are: ";
+        while (ptr != NULL) {
+            cout << ptr->data << " ";
+            ptr = ptr->next;
         }
-        swap(s[i], s[minIndex]);
+        cout << endl;
     }
 }
 
+// Main method
 int main() {
-    const int n = 10;
-    Student s[n];
+    int choice, val;
 
-    createDatabase(s, n);
+    while (1) {
+        cout << "\n--- Stack Menu ---";
+        cout << "\n1. Push";
+        cout << "\n2. Pop";
+        cout << "\n3. Peek";
+        cout << "\n4. Display";
+        cout << "\n5. Check if Empty";
+        cout << "\n6. Check if Full";
+        cout << "\n7. Exit";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
 
-    cout << "\nBefore Sorting:\n";
-    display(s, n);
+        switch (choice) {
+            case 1:
+                cout << "Enter value to push: ";
+                cin >> val;
+                push(val);
+                break;
 
-    selectionSort(s, n);
+            case 2:
+                pop();
+                break;
 
-    cout << "\nAfter Selection Sort (by Name Ascending):\n";
-    display(s, n);
+            case 3:
+                peek();
+                break;
 
-    return 0;
+            case 4:
+                display();
+                break;
+
+            case 5:
+                if (isEmpty())
+                    cout << "\nStack is Empty\n";
+                else
+                    cout << "\nStack is Not Empty\n";
+                break;
+
+            case 6:
+                if (isFull())
+                    cout << "\nStack is Full (Memory not available)\n";
+                else
+                    cout << "\nStack is Not Full\n";
+                break;
+
+            case 7:
+                exit(0);
+
+            default:
+                cout << "\nInvalid Choice!\n";
+        }
+    }
+
+    return 0;
 }
